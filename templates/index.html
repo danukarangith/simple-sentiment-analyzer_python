@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --border-color: #e1e4e8;
+        }
+        body.dark-mode {
+            --primary-color: #61dafb;
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --card-bg: #2c2c2c;
+            --border-color: #444;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            font-size: 2.5rem;
+        }
+        form {
+            margin-bottom: 2rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 150px;
+            font-family: inherit;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        button i {
+            margin-right: 0.5rem;
+        }
+        #result {
+            background-color: rgba(74, 144, 226, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        #result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toggle-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(74, 144, 226, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 144, 226, 0); }
+        }
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-container">
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+    <div class="container">
+        <h1>Advanced Sentiment Analysis</h1>
+        <form id="text-form">
+            <label for="text-input">Enter text for analysis:</label>
+            <textarea id="text-input" name="text" placeholder="Type or paste your text here..."></textarea>
+            <br><br>
+            <button type="submit"><i class="fas fa-search"></i> Analyze Text</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        const result = document.getElementById('result');
+        const form = document.getElementById('text-form');
+        const textarea = document.getElementById('text-input');
+
+        darkModeToggle.addEventListener('change', () => {
+            body.classList.toggle('dark-mode');
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = textarea.value.trim();
+            if (text) {
+                analyzeText(text);
+            } else {
+                showResult('Please enter some text to analyze.', 'warning');
+            }
+        });
+
+        function analyzeText(text) {
+            // Simulate API call with setTimeout
+            showResult('Analyzing...', 'info');
+            setTimeout(() => {
+                // const sentiments = ['Positive', 'Negative', 'Neutral'];
+                const randomSentiment = sentiments[Math.floor(Math.random() * sentiments.length)];
+                showResult(`Analysis complete. The sentiment is: ${randomSentiment}`, 'success');
+            }, 1500);
+        }
+
+        function showResult(message, type) {
+            result.textContent = message;
+            result.className = ''; // Reset classes
+            result.classList.add('show', type);
+            if (type === 'success') {
+                result.classList.add('pulse');
+            }
+        }
+
+        // Enhance textarea
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+
+    <script>
+        document.getElementById('text-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/analyze-text', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.text();
+            document.getElementById('result').innerText = result;
+        };
+    </script>
+</body>
+</html>
