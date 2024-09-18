@@ -27,7 +27,7 @@ This is a simple web application for performing sentiment analysis on text input
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/sentiment-analysis-app.git
+    git clone https://github.com/danukarangith/sentiment-analysis-app.git
     cd sentiment-analysis-app
     ```
 
