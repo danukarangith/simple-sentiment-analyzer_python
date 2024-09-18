@@ -1,6 +1,6 @@
 # Sentiment Analyzer
 
-This is a simple web application for performing sentiment analysis on text input using Flask and TextBlob. The application allows users to enter text and receive a sentiment analysis result indicating whether the text is positive, negative, or neutral.
+This is a simple web application for performing sentiment analysis on text input using Flask and TextBlob. The application allows users to enter text and receive a sentiment analysis result indicating whether the text is positive, negative, or neutral.(also have tkinter file upload cheker and normal checker)
 
 ## Features
 
