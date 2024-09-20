@@ -66,6 +66,7 @@ This is a simple web application for performing sentiment analysis on text input
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ### Acknowledgements
+tbd
 
 - [Flask](https://flask.palletsprojects.com/en/2.1.x/) - Web framework for Python
 - [TextBlob](https://textblob.readthedocs.io/en/dev/) - Text processing library for Python
