@@ -7,7 +7,7 @@ This is a simple web application for performing sentiment analysis on text input
 - Text input for sentiment analysis
 - Backend powered by Flask
 - Sentiment analysis using TextBlob
-- User-friendly web interface with HTML and JavaScript
+- User-friendly web interface with HTML,CSS and JavaScript
 
 ## Project Structure
 
